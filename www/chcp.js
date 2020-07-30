@@ -1,10 +1,10 @@
 
 
-var exec = require('cordova/exec'),
-  channel = require('cordova/channel'),
+// var exec = require('cordova/exec'),
+//   channel = require('cordova/channel'),
 
   // Reference name for the plugin
-  PLUGIN_NAME = 'HotCodePush',
+var PLUGIN_NAME = 'HotCodePush',
 
   // Plugin methods on the native side that can be called from JavaScript
   pluginNativeMethod = {
@@ -19,11 +19,13 @@ var exec = require('cordova/exec'),
 
 // Called when Cordova is ready for work.
 // Here we will send default callback to the native side through which it will send to us different events.
-channel.onCordovaReady.subscribe(function() {
-  ensureCustomEventExists();
-  exec(nativeCallback, null, PLUGIN_NAME, pluginNativeMethod.INITIALIZE, []);
-});
-
+function cordovaReady()
+{
+  cordova.channel.onCordovaReady.subscribe(function() {
+    ensureCustomEventExists();
+    cordova.exec(nativeCallback, null, PLUGIN_NAME, pluginNativeMethod.INITIALIZE, []);
+  });
+}
 /**
  * Method is called when native side sends us different events.
  * Those events can be about update download/installation process.
@@ -88,7 +90,7 @@ function callNativeMethod(methodName, options, callback) {
     sendArgs.push(options);
   }
 
-  exec(innerCallback, null, PLUGIN_NAME, methodName, sendArgs);
+  cordova.exec(innerCallback, null, PLUGIN_NAME, methodName, sendArgs);
 }
 
 // region Update/Install events
@@ -231,7 +233,7 @@ var chcp = {
       }
     };
 
-    exec(onSuccessInnerCallback, onFailureInnerCallback, PLUGIN_NAME, pluginNativeMethod.REQUEST_APP_UPDATE, [message]);
+    cordova.exec(onSuccessInnerCallback, onFailureInnerCallback, PLUGIN_NAME, pluginNativeMethod.REQUEST_APP_UPDATE, [message]);
   },
 
   /**
@@ -274,6 +276,13 @@ var chcp = {
    */
   getVersionInfo: function(callback) {
     callNativeMethod(pluginNativeMethod.GET_INFO, null, callback);
+  },
+  /**
+   * ready
+   */
+  ready: function()
+  {
+    cordovaReady();
   }
 };
 
