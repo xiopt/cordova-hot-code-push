@@ -8,7 +8,7 @@
 #import "NSError+HCPExtension.h"
 #import "HCPEvents.h"
 
-static NSString *const WWW_FOLDER_IN_BUNDLE = @"www";
+static NSString *const WWW_FOLDER_IN_BUNDLE = @"public";//CapacitorCordova -> public //Cordova -> www
 
 @implementation NSBundle (HCPExtension)
 
