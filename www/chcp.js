@@ -21,10 +21,10 @@ var PLUGIN_NAME = 'HotCodePush',
 // Here we will send default callback to the native side through which it will send to us different events.
 function cordovaReady()
 {
-  cordova.channel.onCordovaReady.subscribe(function() {
+  // cordova.channel.onCordovaReady.subscribe(function() {
     ensureCustomEventExists();
     cordova.exec(nativeCallback, null, PLUGIN_NAME, pluginNativeMethod.INITIALIZE, []);
-  });
+  // });
 }
 /**
  * Method is called when native side sends us different events.
