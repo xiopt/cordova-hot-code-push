@@ -277,7 +277,7 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
     }
     //Capacitor mode
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:_filesStructure.wwwFolder.absoluteString forKey:"serverBasePath"];
+    [userDefaults setObject:_filesStructure.wwwFolder.absoluteString forKey:@"serverBasePath"];
     [userDefaults synchronize];
     
     //Cordova mode
