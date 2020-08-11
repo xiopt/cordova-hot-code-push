@@ -279,7 +279,7 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
     if ([NSStringFromClass([self.viewController class]) isEqualToString:@"Capacitor.CAPBridgeViewController"]) 
     {
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        [userDefaults setObject:_filesStructure.wwwFolder.absoluteString forKey:@"serverBasePath"];
+        [userDefaults setObject:_filesStructure.wwwFolder.path forKey:@"serverBasePath"];
         [userDefaults synchronize];
     }
     else
