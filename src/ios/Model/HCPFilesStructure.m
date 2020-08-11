@@ -9,6 +9,7 @@
 
 #pragma mark Predefined folders and file names of the plugin
 
+static NSString *const CAP_CHCP_FOLDER = @"NoCloud/ionic_built_snapshots";
 static NSString *const CHCP_FOLDER = @"cordova-hot-code-push-plugin";
 static NSString *const DOWNLOAD_FOLDER = @"update";
 static NSString *const WWWW_FOLDER = @"www";
@@ -65,6 +66,11 @@ static NSString *const CHCP_MANIFEST_FILE_PATH = @"chcp.manifest";
 - (void)localInitWithReleaseVersion:(NSString *)releaseVersion {
     _contentFolder = [[HCPFilesStructure pluginRootFolder]
                       URLByAppendingPathComponent:releaseVersion isDirectory:YES];
+    //www folder capacitor mode: cap is CAP_CHCP_FOLDER
+    NSURL *supportDir = [[NSFileManager defaultManager] applicationSupportDirectory];
+    NSString *libPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+    NSString *lastPathComponent = [[supportDir.lastPathComponent stringByAppendingString:@"-"] stringByAppendingString:releaseVersion];
+    _wwwFolder = [[[NSURL fileURLWithPath:libPath] URLByAppendingPathComponent:CAP_CHCP_FOLDER isDirectory:YES] URLByAppendingPathComponent:lastPathComponent isDirectory:YES];                  
 }
 
 - (NSURL *)downloadFolder {
@@ -77,7 +83,8 @@ static NSString *const CHCP_MANIFEST_FILE_PATH = @"chcp.manifest";
 
 - (NSURL *)wwwFolder {
     if (_wwwFolder == nil) {
-        _wwwFolder = [self.contentFolder URLByAppendingPathComponent:WWWW_FOLDER isDirectory:YES];
+        //cordova mode:
+        //_wwwFolder = [self.contentFolder URLByAppendingPathComponent:WWWW_FOLDER isDirectory:YES];
     }
     
     return _wwwFolder;

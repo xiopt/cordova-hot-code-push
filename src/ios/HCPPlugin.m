@@ -276,10 +276,17 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
         return;
     }
     //Capacitor mode
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:_filesStructure.wwwFolder.absoluteString forKey:@"serverBasePath"];
-    [userDefaults synchronize];
-    
+    if ([NSStringFromClass([self.viewController class]) isEqualToString:@"Capacitor.CAPBridgeViewController"]) 
+    {
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults setObject:_filesStructure.wwwFolder.absoluteString forKey:@"serverBasePath"];
+        [userDefaults synchronize];
+    }
+    else
+    {
+        NSLog(@"HotCodePushError: Can't make starting page to be from external storage. Main controller should be of type Capacitor.CAPBridgeViewController.");
+    }
+ 
     //Cordova mode
     // // rewrite starting page www folder path: should load from external storage
     // if ([self.viewController isKindOfClass:[CDVViewController class]]) {
