@@ -281,6 +281,7 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults setObject:_filesStructure.wwwFolder.path forKey:@"serverBasePath"];
         [userDefaults synchronize];
+        [self dispatchResetIndexPageToExternalStorageForEvent];
     }
     else
     {
@@ -823,5 +824,13 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
                                                                          error:error];
     [self.commandDelegate sendPluginResult:errorResult callbackId:callbackID];
 }
-
+//capacitor mode:
+- (void)dispatchResetIndexPageToExternalStorageForEvent
+{
+ 
+    NSNotification *notification = [HCPEvents notificationWithName:kHCPResetIndexPageToExternalStorageEvent
+                                                            applicationConfig:nil
+                                                                       taskId:nil
+                                                            wwwPath:_filesStructure.wwwFolder.path];
+}
 @end
