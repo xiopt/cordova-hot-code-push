@@ -281,7 +281,6 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         [userDefaults setObject:_filesStructure.wwwFolder.path forKey:@"serverBasePath"];
         [userDefaults synchronize];
-        [self dispatchResetIndexPageToExternalStorageForEvent];
     }
     else
     {
@@ -665,9 +664,19 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
     // send notification to the default callback
     [self invokeDefaultCallbackWithMessage:pluginResult];
     
-    // reload application to the index page
-    [self loadURL:[self indexPageFromConfigXml]];
-    
+    // Capacitor mode
+    if ([NSStringFromClass([self.viewController class]) isEqualToString:@"Capacitor.CAPBridgeViewController"]) 
+    {
+        //Capacitor mode: rest index page
+        [self resetIndexPageToExternalStorage];
+    }
+    // Cordova mode:
+    else if ([self.viewController isKindOfClass:[CDVViewController class]])
+    {
+        // reload application to the index page
+        [self loadURL:[self indexPageFromConfigXml]];
+    }
+ 
     [self cleanupFileSystemFromOldReleases];
 }
 
@@ -824,13 +833,5 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
                                                                          error:error];
     [self.commandDelegate sendPluginResult:errorResult callbackId:callbackID];
 }
-//capacitor mode:
-- (void)dispatchResetIndexPageToExternalStorageForEvent
-{
- 
-    NSNotification *notification = [HCPEvents notificationWithName:kHCPResetIndexPageToExternalStorageEvent
-                                                            applicationConfig:nil
-                                                                       taskId:nil
-                                                            wwwPath:_filesStructure.wwwFolder.path];
-}
+
 @end

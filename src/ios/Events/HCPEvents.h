@@ -75,13 +75,6 @@ extern NSString *const kHCPEventUserInfoApplicationConfigKey;
 
 
 /**
- * Event is dispatched when we successfully installed www content from  external storage.
- */
-extern NSString *const kHCPResetIndexPageToExternalStorageEvent;
-
-
-
-/**
  *  Helper class tor create plugin specific notifications about work process (download or installation).
  */
 @interface HCPEvents : NSObject
@@ -98,31 +91,6 @@ extern NSString *const kHCPResetIndexPageToExternalStorageEvent;
  *  @return instance of the NSNotification
  */
 + (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error;
-
-/**
- *  Create instance of the NSNotification.
- *  Object is then dispatched through the NSNotificationCenter.
- *
- *  @param name      namve of the event
- *  @param appConfig application config that is attached to the event
- *  @param taskId    id of the worker which generated the event
- *  @param wwwPath  www path to the event
- *
- *  @return instance of the NSNotification
- */
-+ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId wwwPath:(NSString*)wwwPath;
-/**
- *  Create instance of the NSNotification.
- *  Object is then dispatched through the NSNotificationCenter.
- *
- *  @param name      namve of the event
- *  @param appConfig application config that is attached to the event
- *  @param taskId    id of the worker which generated the event
- *  @param error     error that is attached to the event
- *
- *  @return instance of the NSNotification
- */
-+ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error wwwPath:(NSString *)wwwPath;
 
 /**
  *  Create instance of the NSNotification.

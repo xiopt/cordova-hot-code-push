@@ -184,9 +184,7 @@ var chcp = {
     BEFORE_UPDATE_INSTALLATION: 'chcp_beforeInstall',
     UPDATE_INSTALLATION_FAILED: 'chcp_updateInstallFailed',
     UPDATE_INSTALLED: 'chcp_updateInstalled',
-    NOTHING_TO_INSTALL: 'chcp_nothingToInstall',
-    
-    REST_INDEX_PAGE_TO_EXTERNAL_STORAGE: 'chcp_resetIndexPageToExternalStorage',
+    NOTHING_TO_INSTALL: 'chcp_nothingToInstall'
   },
 
   /**
