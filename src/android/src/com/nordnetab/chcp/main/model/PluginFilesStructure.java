@@ -22,6 +22,7 @@ public class PluginFilesStructure {
      */
     public static final String MANIFEST_FILE_NAME = "chcp.manifest";
 
+    private static final String CAP_PLUGIN_FOLDER = "NoCloud/ionic_built_snapshots";
     private static final String PLUGIN_FOLDER = "cordova-hot-code-push-plugin";
 
     private static final String MAIN_CONTENT_FOLDER = "www";
@@ -38,7 +39,10 @@ public class PluginFilesStructure {
      * @return absolute path to root folder
      */
     public static String getPluginRootFolder(final Context context) {
-        return Paths.get(context.getFilesDir().getAbsolutePath(), PLUGIN_FOLDER);
+        //www folder capacitor mode: cap is CAP_PLUGIN_FOLDER
+        return Paths.get(context.getFilesDir().getAbsolutePath(), CAP_PLUGIN_FOLDER);
+        //cordova mode:
+        //return Paths.get(context.getFilesDir().getAbsolutePath(), PLUGIN_FOLDER);
         //return Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath(), PLUGIN_FOLDER);
     }
 
@@ -51,7 +55,10 @@ public class PluginFilesStructure {
     public PluginFilesStructure(final Context context, final String releaseVersion) {
         // uncomment this line, if you want store files on sdcard instead of application file directory
         //contentFolder = Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath(), PLUGIN_FOLDER, releaseVersion);
-        contentFolder = Paths.get(context.getFilesDir().getAbsolutePath(), PLUGIN_FOLDER, releaseVersion);
+        //cap mode:
+        contentFolder = Paths.get(context.getFilesDir().getAbsolutePath(), CAP_PLUGIN_FOLDER, releaseVersion);
+        //cordova mode:
+        //contentFolder = Paths.get(context.getFilesDir().getAbsolutePath(), PLUGIN_FOLDER, releaseVersion);
     }
 
     /**
@@ -64,7 +71,7 @@ public class PluginFilesStructure {
         contentFolder = Paths.get(contentFolder.substring(0, idx), releaseVersion);
 
         // reset values
-        wwwFolder = null;
+        wwwFolder = null;// cordova mode
         downloadFolder = null;
     }
 
@@ -84,9 +91,9 @@ public class PluginFilesStructure {
      */
     public String getWwwFolder() {
         if (wwwFolder == null) {
+           // cordova mode:
             wwwFolder = Paths.get(getContentFolder(), MAIN_CONTENT_FOLDER);
         }
-
         return wwwFolder;
     }
 

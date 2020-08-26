@@ -64,8 +64,8 @@ import java.util.Map;
 public class HotCodePushPlugin extends CordovaPlugin {
 
     private static final String FILE_PREFIX = "file://";
-    private static final String WWW_FOLDER = "www";
-    private static final String LOCAL_ASSETS_FOLDER = "file:///android_asset/www";
+    private static final String WWW_FOLDER = "public"; //cordova www
+    private static final String LOCAL_ASSETS_FOLDER = "file:///android_asset/public";//cordova file:///android_asset/www
 
     private String startingPage;
     private IObjectFileStorage<ApplicationConfig> appConfigStorage;
@@ -623,6 +623,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
             return;
         }
 
+        Log.d("CHCP", "Loading external class name: " + webView.getClass().getName());
         // load index page from the external source
         external = Paths.get(fileStructure.getWwwFolder(), indexPage);
         webView.loadUrlIntoView(FILE_PREFIX + external, false);
