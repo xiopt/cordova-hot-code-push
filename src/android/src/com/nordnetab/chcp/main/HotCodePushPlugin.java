@@ -639,7 +639,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         //cap cache mode:
         SharedPreferences prefs = webView.getContext().getSharedPreferences("CapWebViewSettings", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("serverBasePath", FILE_PREFIX + external);
+        editor.putString("serverBasePath", fileStructure.getWwwFolder());
         editor.commit();
 
     }
