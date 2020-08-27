@@ -1,6 +1,8 @@
 package com.nordnetab.chcp.main;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -65,7 +67,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
 
     private static final String FILE_PREFIX = "file://";
     private static final String WWW_FOLDER = "public"; //cordova www
-    private static final String LOCAL_ASSETS_FOLDER = "file:///android_asset/public";//cordova file:///android_asset/www
+    private static final String LOCAL_ASSETS_FOLDER = "file:///android_asset/www";//cordova file:///android_asset/www
 
     private String startingPage;
     private IObjectFileStorage<ApplicationConfig> appConfigStorage;
@@ -103,6 +105,8 @@ public class HotCodePushPlugin extends CordovaPlugin {
         fileStructure = new PluginFilesStructure(cordova.getActivity(), pluginInternalPrefs.getCurrentReleaseVersionName());
         appConfigStorage = new ApplicationConfigStorage();
         defaultCallbackStoredResults = new ArrayList<PluginResult>();
+        //cap mode:
+        redirectToLocalStorageIndexPage();
     }
 
     @Override
@@ -522,11 +526,13 @@ public class HotCodePushPlugin extends CordovaPlugin {
      *                   used, when installation os requested manually from JavaScript
      */
     private void installUpdate(CallbackContext jsCallback) {
+        Log.d("D/CHCP", "installUpdate isPluginReadyForWork: " + isPluginReadyForWork);
         if (!isPluginReadyForWork) {
             return;
         }
 
         ChcpError error = UpdatesInstaller.install(cordova.getActivity(), pluginInternalPrefs.getReadyForInstallationReleaseVersionName(), pluginInternalPrefs.getCurrentReleaseVersionName());
+        Log.d("D/CHCP", "installUpdate ChcpError: " + error.toString());
         if (error != ChcpError.NONE) {
             if (jsCallback != null) {
                 PluginResult errorResult = PluginResultHelper.createPluginResult(UpdateInstallationErrorEvent.EVENT_NAME, null, error);
@@ -618,6 +624,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
 
         // make sure, that index page exists
         String external = Paths.get(fileStructure.getWwwFolder(), strippedIndexPage);
+        Log.d("CHCP", "External starting page " + external);
         if (!new File(external).exists()) {
             Log.d("CHCP", "External starting page not found. Aborting page change.");
             return;
@@ -627,8 +634,14 @@ public class HotCodePushPlugin extends CordovaPlugin {
         // load index page from the external source
         external = Paths.get(fileStructure.getWwwFolder(), indexPage);
         webView.loadUrlIntoView(FILE_PREFIX + external, false);
-
         Log.d("CHCP", "Loading external page: " + external);
+
+        //cap cache mode:
+        SharedPreferences prefs = webView.getContext().getSharedPreferences("CapWebViewSettings", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("serverBasePath", FILE_PREFIX + external);
+        editor.commit();
+
     }
 
     /**
@@ -739,7 +752,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         }
 
         sendMessageToDefaultCallback(jsResult);
-
+        Log.d("D/CHCP", "onEvent: " + chcpXmlConfig.isAutoInstallIsAllowed() +' ' + newContentConfig.getUpdateTime());
         // perform installation if allowed
         if (chcpXmlConfig.isAutoInstallIsAllowed() && newContentConfig.getUpdateTime() == UpdateTime.NOW) {
             installUpdate(null);
