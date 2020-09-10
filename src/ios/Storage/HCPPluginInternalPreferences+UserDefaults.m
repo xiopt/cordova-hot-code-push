@@ -28,5 +28,15 @@ static NSString *const PLUGIN_CONFIG_USER_DEFAULTS_KEY = @"plugin_config";
     return nil;
 }
 
++ (void) clearFromUserDefaults {
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    id json = [userDefaults objectForKey:PLUGIN_CONFIG_USER_DEFAULTS_KEY];
+    if (json) {
+        [userDefaults removeObjectForKey:PLUGIN_CONFIG_USER_DEFAULTS_KEY];
+        [userDefaults synchronize];
+    }
+}
+
 
 @end

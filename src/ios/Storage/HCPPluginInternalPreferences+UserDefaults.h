@@ -28,4 +28,6 @@
  */
 + (HCPPluginInternalPreferences *)loadFromUserDefaults;
 
++ (void) clearFromUserDefaults;
+
 @end
