@@ -50,4 +50,9 @@ public class PluginInternalPreferencesStorage implements IObjectPreferenceStorag
 
         return PluginInternalPreferences.fromJson(configJson);
     }
+
+    @Override
+    public void clearFromPreference() {
+       preferences.edit().remove(PREF_KEY);
+    }
 }

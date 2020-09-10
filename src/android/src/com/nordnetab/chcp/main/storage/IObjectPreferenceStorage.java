@@ -23,4 +23,9 @@ public interface IObjectPreferenceStorage<T> {
      * @return instance of the restored object
      */
     T loadFromPreference();
+
+    /**
+     * clear shared preference
+     */
+    void clearFromPreference();
 }

@@ -235,6 +235,33 @@ public class HotCodePushPlugin extends CordovaPlugin {
             pluginInternalPrefsStorage.storeInPreference(config);
         }
         pluginInternalPrefs = config;
+
+        // //如果build version 不等就重新热更流程(这个模式是为了保证低包强更，上次版本app缓存还在的处理方式)
+        // if(isApplicationHasBeenUpdated())
+        // {
+        //     if(isWwwFolderExists())
+        //     {
+        //     this.cleanupFileSystemFromOldReleases();
+        //     }
+        //     pluginInternalPrefsStorage.clearFromPreference();
+
+        //     config = pluginInternalPrefsStorage.loadFromPreference();
+        //     if (config == null || TextUtils.isEmpty(config.getCurrentReleaseVersionName())) {
+        //     config = PluginInternalPreferences.createDefault(cordova.getActivity());
+        //     pluginInternalPrefsStorage.storeInPreference(config);
+        //     }
+        //     pluginInternalPrefs = config;
+
+        //     //cap cache mode:
+        //     SharedPreferences prefs = webView.getContext().getSharedPreferences("CapWebViewSettings", Activity.MODE_PRIVATE);
+        //     String serverBasePath = null;
+        //     prefs.getString("serverBasePath", serverBasePath);
+        //     if(serverBasePath!=null && fileStructure.getWwwFolder() == serverBasePath)
+        //     {
+        //         SharedPreferences.Editor editor = prefs.edit();
+        //         editor.remove("serverBasePath");
+        //     }
+        // }
     }
 
     // endregion
