@@ -22,7 +22,15 @@ As a result, your application receives updates of the web content as soon as pos
 - Android 4.0.0 or above.
 - iOS 7.0 or above. Xcode 7 is required.
 
+
+
 ### Installation
+
+This requires capacitor 1.0+ (current stable 1.5.3)
+
+```sh
+npm install git+https://github.com/match08/cordova-hot-code-push.git
+```
 
 This requires cordova 5.0+ (current stable 1.5.3)
 
