@@ -144,31 +144,31 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
     _pluginXmlConfig = [HCPXmlConfig loadFromCordovaConfigXml];
     
     //cap mode added build version
-    BOOL isApplicationUpdated = ![[NSBundle applicationBuildVersion] isEqualToString:_pluginInternalPrefs.appBuildVersion];
-    //如果build version 不等就重新热更流程(这个模式是为了保证低包强更，上次版本app缓存还在的处理方式)
-    if(isApplicationUpdated)
-    {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        BOOL isWWwFolderExists = [fileManager fileExistsAtPath:_filesStructure.wwwFolder.path];
-        BOOL isWWwFolderInstalled = _pluginInternalPrefs.isWwwFolderInstalled;
-        if(isWWwFolderExists || isWWwFolderInstalled)
-        {
-            [self cleanupFileSystemFromOldReleases];
-        }
-       // clear preferences
-       [HCPPluginInternalPreferences clearFromUserDefaults];
-       // clear Capacitor mode webview baseServerPath
-       if ([NSStringFromClass([self.viewController class]) isEqualToString:@"Capacitor.CAPBridgeViewController"])
-       {
-          NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    // BOOL isApplicationUpdated = ![[NSBundle applicationBuildVersion] isEqualToString:_pluginInternalPrefs.appBuildVersion];
+    // //如果build version 不等就重新热更流程(这个模式是为了保证低包强更，上次版本app缓存还在的处理方式)
+    // if(isApplicationUpdated)
+    // {
+    //     NSFileManager *fileManager = [NSFileManager defaultManager];
+    //     BOOL isWWwFolderExists = [fileManager fileExistsAtPath:_filesStructure.wwwFolder.path];
+    //     BOOL isWWwFolderInstalled = _pluginInternalPrefs.isWwwFolderInstalled;
+    //     if(isWWwFolderExists || isWWwFolderInstalled)
+    //     {
+    //         [self cleanupFileSystemFromOldReleases];
+    //     }
+    //    // clear preferences
+    //    [HCPPluginInternalPreferences clearFromUserDefaults];
+    //    // clear Capacitor mode webview baseServerPath
+    //    if ([NSStringFromClass([self.viewController class]) isEqualToString:@"Capacitor.CAPBridgeViewController"])
+    //    {
+    //       NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
            
-          if([[userDefaults valueForKey:@"serverBasePath"] isEqualToString:_filesStructure.wwwFolder.path])
-          {
-              [userDefaults removeObjectForKey:@"serverBasePath"];
-              [userDefaults synchronize];
-          }
-       }
-    }
+    //       if([[userDefaults valueForKey:@"serverBasePath"] isEqualToString:_filesStructure.wwwFolder.path])
+    //       {
+    //           [userDefaults removeObjectForKey:@"serverBasePath"];
+    //           [userDefaults synchronize];
+    //       }
+    //    }
+    // }
     // load plugin internal preferences
     _pluginInternalPrefs = [HCPPluginInternalPreferences loadFromUserDefaults];
     if (_pluginInternalPrefs == nil || _pluginInternalPrefs.currentReleaseVersionName.length == 0) {
