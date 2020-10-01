@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.nordnetab.chcp.main.config.ApplicationConfig;
 import com.nordnetab.chcp.main.config.CapacitorConfig;
-import com.nordnetab.chcp.main.config.ChcpXmlConfig;
 import com.nordnetab.chcp.main.config.ContentConfig;
 import com.nordnetab.chcp.main.config.FetchUpdateOptions;
 import com.nordnetab.chcp.main.config.PluginInternalPreferences;
@@ -74,7 +73,6 @@ public class HotCodePushPlugin extends CordovaPlugin {
     private IObjectFileStorage<ApplicationConfig> appConfigStorage;
     private PluginInternalPreferences pluginInternalPrefs;
     private IObjectPreferenceStorage<PluginInternalPreferences> pluginInternalPrefsStorage;
-    private ChcpXmlConfig chcpXmlConfig;
     private CapacitorConfig capacitorConfig;
     private PluginFilesStructure fileStructure;
 
@@ -94,8 +92,6 @@ public class HotCodePushPlugin extends CordovaPlugin {
     @Override
     public void initialize(final CordovaInterface cordova, final CordovaWebView webView) {
         super.initialize(cordova, webView);
-
-//        parseCordovaConfigXml();
 
         loadCapacitorConfig();
 
@@ -209,20 +205,6 @@ public class HotCodePushPlugin extends CordovaPlugin {
 
     // region Config loaders and initialization
 
-    /**
-     * Read hot-code-push plugin preferences from cordova config.xml
-     *
-     * @see ChcpXmlConfig
-     */
-    private void parseCordovaConfigXml() {
-
-        // No need for cordova XML config with capacitor
-        if (true || chcpXmlConfig != null) {
-            return;
-        }
-
-        chcpXmlConfig = ChcpXmlConfig.loadFromCordovaConfig(cordova.getActivity());
-    }
 
     private void loadCapacitorConfig() {
         capacitorConfig = CapacitorConfig.loadFromCapacitorConfig(cordova.getActivity());
@@ -431,7 +413,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
 
         try {
             JSONObject jsonObject = (JSONObject) arguments.get(0);
-            chcpXmlConfig.mergeOptionsFromJs(jsonObject);
+//            chcpXmlConfig.mergeOptionsFromJs(jsonObject);
             // TODO: store them somewhere?
         } catch (JSONException e) {
             Log.d("CHCP", "Failed to process plugin options, received from JS.", e);
