@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.nordnetab.chcp.main.config.ApplicationConfig;
+import com.nordnetab.chcp.main.config.CapacitorConfig;
 import com.nordnetab.chcp.main.config.ChcpXmlConfig;
 import com.nordnetab.chcp.main.config.ContentConfig;
 import com.nordnetab.chcp.main.config.FetchUpdateOptions;
@@ -74,6 +75,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
     private PluginInternalPreferences pluginInternalPrefs;
     private IObjectPreferenceStorage<PluginInternalPreferences> pluginInternalPrefsStorage;
     private ChcpXmlConfig chcpXmlConfig;
+    private CapacitorConfig capacitorConfig;
     private PluginFilesStructure fileStructure;
 
     private CallbackContext installJsCallback;
@@ -93,7 +95,10 @@ public class HotCodePushPlugin extends CordovaPlugin {
     public void initialize(final CordovaInterface cordova, final CordovaWebView webView) {
         super.initialize(cordova, webView);
 
-        parseCordovaConfigXml();
+//        parseCordovaConfigXml();
+
+        loadCapacitorConfig();
+
         loadPluginInternalPreferences();
 
         Log.d("CHCP", "Currently running release version " + pluginInternalPrefs.getCurrentReleaseVersionName());
@@ -134,7 +139,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         }
 
         // install update if there is anything to install
-        if (chcpXmlConfig.isAutoInstallIsAllowed() &&
+        if (capacitorConfig.isAutoInstallIsAllowed() &&
                 !UpdatesInstaller.isInstalling() &&
                 !UpdatesLoader.isExecuting() &&
                 !TextUtils.isEmpty(pluginInternalPrefs.getReadyForInstallationReleaseVersionName())) {
@@ -150,7 +155,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
             return;
         }
 
-        if (!chcpXmlConfig.isAutoInstallIsAllowed() ||
+        if (!capacitorConfig.isAutoInstallIsAllowed() ||
                 UpdatesInstaller.isInstalling() ||
                 UpdatesLoader.isExecuting() ||
                 TextUtils.isEmpty(pluginInternalPrefs.getReadyForInstallationReleaseVersionName())) {
@@ -210,11 +215,17 @@ public class HotCodePushPlugin extends CordovaPlugin {
      * @see ChcpXmlConfig
      */
     private void parseCordovaConfigXml() {
-        if (chcpXmlConfig != null) {
+
+        // No need for cordova XML config with capacitor
+        if (true || chcpXmlConfig != null) {
             return;
         }
 
         chcpXmlConfig = ChcpXmlConfig.loadFromCordovaConfig(cordova.getActivity());
+    }
+
+    private void loadCapacitorConfig() {
+        capacitorConfig = CapacitorConfig.loadFromCapacitorConfig(cordova.getActivity());
     }
 
     /**
@@ -351,7 +362,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         });
 
         // fetch update when we are initialized
-        if (chcpXmlConfig.isAutoDownloadIsAllowed() &&
+        if (capacitorConfig.isAutoDownloadIsAllowed() &&
                 !UpdatesInstaller.isInstalling() && !UpdatesLoader.isExecuting()) {
             fetchUpdate();
         }
@@ -513,7 +524,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         }
 
         Map<String, String> requestHeaders = null;
-        String configURL = chcpXmlConfig.getConfigUrl();
+        String configURL = capacitorConfig.getConfigUrl();
         if (fetchOptions == null) {
             fetchOptions = defaultFetchUpdateOptions;
         }
@@ -527,7 +538,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
 
         final UpdateDownloadRequest request = UpdateDownloadRequest.builder(cordova.getActivity())
                 .setConfigURL(configURL)
-                .setCurrentNativeVersion(chcpXmlConfig.getNativeInterfaceVersion())
+                .setCurrentNativeVersion(capacitorConfig.getNativeInterfaceVersion())
                 .setCurrentReleaseVersion(pluginInternalPrefs.getCurrentReleaseVersionName())
                 .setRequestHeaders(requestHeaders)
                 .build();
@@ -725,7 +736,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         PluginResult result = PluginResultHelper.pluginResultFromEvent(event);
         sendMessageToDefaultCallback(result);
 
-        if (chcpXmlConfig.isAutoDownloadIsAllowed() &&
+        if (capacitorConfig.isAutoDownloadIsAllowed() &&
                 !UpdatesInstaller.isInstalling() && !UpdatesLoader.isExecuting()) {
             fetchUpdate();
         }
@@ -779,9 +790,9 @@ public class HotCodePushPlugin extends CordovaPlugin {
         }
 
         sendMessageToDefaultCallback(jsResult);
-        Log.d("D/CHCP", "onEvent: " + chcpXmlConfig.isAutoInstallIsAllowed() +' ' + newContentConfig.getUpdateTime());
+        Log.d("D/CHCP", "onEvent: " + capacitorConfig.isAutoInstallIsAllowed() +' ' + newContentConfig.getUpdateTime());
         // perform installation if allowed
-        if (chcpXmlConfig.isAutoInstallIsAllowed() && newContentConfig.getUpdateTime() == UpdateTime.NOW) {
+        if (capacitorConfig.isAutoInstallIsAllowed() && newContentConfig.getUpdateTime() == UpdateTime.NOW) {
             installUpdate(null);
         }
     }

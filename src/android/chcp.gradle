@@ -13,4 +13,4 @@ cdvPluginPostBuildExtras.add({
         compile 'com.fasterxml.jackson.core:jackson-databind:2.4.4'
         compile 'org.greenrobot:eventbus:3.0.0'
     }
-});
+})
