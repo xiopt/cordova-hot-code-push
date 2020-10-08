@@ -1,8 +1,14 @@
 package com.nordnetab.chcp.main;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -49,14 +55,18 @@ import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.PluginResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Nikolay Demyankov on 23.07.15.
@@ -653,7 +663,9 @@ public class HotCodePushPlugin extends CordovaPlugin {
         Log.d("CHCP", "Loading external class name: " + webView.getClass().getName());
         // load index page from the external source
         external = Paths.get(fileStructure.getWwwFolder(), indexPage);
-        webView.loadUrlIntoView(FILE_PREFIX + external, false);
+        Log.d("CHCP", "File loaded: " + external);
+
+        webView.loadUrlIntoView(FILE_PREFIX + external, true);
         Log.d("CHCP", "Loading external page: " + external);
 
         //cap cache mode:
@@ -661,6 +673,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("serverBasePath", fileStructure.getWwwFolder());
         editor.commit();
+        webView.clearCache(true);
 
     }
 
@@ -890,16 +903,57 @@ public class HotCodePushPlugin extends CordovaPlugin {
 
         sendMessageToDefaultCallback(jsResult);
 
+        clearUserDataAndRestart();
+
         // reset content to index page
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HotCodePushPlugin.this.redirectToLocalStorageIndexPage();
+                com.nordnetab.chcp.main.HotCodePushPlugin.this.redirectToLocalStorageIndexPage();
             }
         });
 
         cleanupFileSystemFromOldReleases();
     }
+
+    public void clearUserDataAndRestart() {
+        final Context context = cordova.getActivity();
+        Log.d("CHCP", "Clearing data and restarting app");
+
+        File cache = cordova.getActivity().getApplicationContext().getCacheDir();
+        File appDir = new File(cache.getParent());
+        Log.d("CHCP", "AppDir = " + appDir);
+        if (appDir.exists()) {
+            String[] children = appDir.list();
+            for (String s : children) {
+                if (s.equals(("code_cache"))) {
+                    Log.d("CHCP", "Delete " + s);
+                    deleteDir(new File(appDir, s));
+                }
+            }
+//			list(appDir.listFiles());
+
+        }
+    }
+
+    public void list(File[] files) {
+        for (File file : files) {
+            if (file.isDirectory()) {
+                list(file.listFiles());
+            } else {
+                Log.d("CHCP", "FILE: " + file);
+            }
+        }
+    }
+
+    private void deleteDir(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteDir(child);
+
+        fileOrDirectory.delete();
+    }
+
 
     /**
      * Listener for event that some error happened during the update installation.
