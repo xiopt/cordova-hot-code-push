@@ -69,9 +69,12 @@ class UpdateLoaderWorker implements WorkerTask {
         if (!init()) {
             return;
         }
+        Log.d("CHCP", "Application config url: " + applicationConfigUrl);
 
         // download new application config
         final ApplicationConfig newAppConfig = downloadApplicationConfig(applicationConfigUrl);
+        Log.d("CHCP", "newAppConfig: " + newAppConfig);
+
         if (newAppConfig == null) {
             setErrorResult(ChcpError.FAILED_TO_DOWNLOAD_APPLICATION_CONFIG, null);
             return;

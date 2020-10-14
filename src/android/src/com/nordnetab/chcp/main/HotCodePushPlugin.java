@@ -520,6 +520,8 @@ public class HotCodePushPlugin extends CordovaPlugin {
         if (fetchOptions == null) {
             fetchOptions = defaultFetchUpdateOptions;
         }
+        Log.d("CHCP", "ConfigUrl 1: " + configURL);
+
         if (fetchOptions != null) {
             requestHeaders = fetchOptions.getRequestHeaders();
             final String optionalConfigURL = fetchOptions.getConfigURL();
@@ -527,6 +529,7 @@ public class HotCodePushPlugin extends CordovaPlugin {
                 configURL = optionalConfigURL;
             }
         }
+        Log.d("CHCP", "ConfigUrl 2: " + configURL);
 
         final UpdateDownloadRequest request = UpdateDownloadRequest.builder(cordova.getActivity())
                 .setConfigURL(configURL)
